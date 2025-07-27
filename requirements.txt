@@ -2,3 +2,4 @@ numpy
 pyte==0.8.1
 openai
 python-dotenv
+pywinpty

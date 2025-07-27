@@ -15,54 +15,69 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import time
 import os
-import fcntl
-import pty
-import signal
-import pyte
+import time
 import shutil
 import warnings
+import platform
+import subprocess
+import struct
+import signal
 
-from .options import RogueBoxOptions
-from .parser import RogueParser
-from .evaluator import RogueEvaluator
-from . import states
-from . import rewards
-from .exceptions import *
+if platform.system() == "Windows":
+    import pywinpty
+else:
+    import fcntl
+    import tty
+    import termios
+
+from pyte import Screen, ByteStream
+
+from options import RogueBoxOptions
+from parser import RogueParser
+from exceptions import RogueLoopError, RogueLoopWarning
+from evaluator import RogueEvaluator
+import rewards
+import states
+
 
 warnings.simplefilter("always", RogueLoopWarning)
 
 
-class Terminal:
-    def __init__(self, columns, lines):
-        self.screen = pyte.DiffScreen(columns, lines)
-        self.stream = pyte.ByteStream()
-        self.stream.attach(self.screen)
-
-    def feed(self, data):
-        self.stream.feed(data)
-
-    def read(self):
-        return self.screen.display
-
-
 def open_terminal(command, args, columns=80, lines=24):
-    """Starts a child process executing the given command with args"""
+    """open a terminal of the given size and return a file descriptor for it
 
-    p_pid, master_fd = pty.fork()
-    if p_pid == 0:  # Child.
-        args = [command] + args
-        env = dict(TERM="linux", LC_ALL="en_GB.UTF-8",
-                   COLUMNS=str(columns), LINES=str(lines))
-        os.execvpe(command, args, env)
+    :param str command:
+        command to be executed
+    :param list[str] args:
+        command arguments
+    :param int columns:
+        number of columns of the terminal
+    :param int lines:
+        number of lines of the terminal
+    :return:
+        the terminal file descriptor
+    """
+    if platform.system() == "Windows":
+        raise NotImplementedError("open_terminal is not supported on Windows")
 
-    # set non blocking read
-    flag = fcntl.fcntl(master_fd, fcntl.F_GETFD)
-    fcntl.fcntl(master_fd, fcntl.F_SETFL, flag | os.O_NONBLOCK)
-    # File-like object for I/O with the child process aka command.
-    p_out = os.fdopen(master_fd, "w+b", 0)
-    return Terminal(columns, lines), p_pid, p_out
+    master, slave = os.openpty()
+    pid = os.fork()
+    if pid == 0:  # child
+        os.setsid()
+        os.dup2(slave, 0)
+        os.dup2(slave, 1)
+        os.dup2(slave, 2)
+
+        winsize = termios.TIOCSWINSZ
+        os.ioctl(slave, winsize, struct.pack("HHHH", lines, columns, 0, 0))
+
+        os.execvp(command, args)
+    else:  # parent
+        # set the PTY to be non-blocking
+        flags = fcntl.fcntl(master, fcntl.F_GETFL)
+        fcntl.fcntl(master, fcntl.F_SETFL, flags | os.O_NONBLOCK)
+        return master
 
 
 class RogueBox:
@@ -101,7 +116,7 @@ class RogueBox:
 
     @staticmethod
     def default_game_exe_path():
-        exe_name = 'rogue'
+        exe_name = 'rogue.exe' if platform.system() == "Windows" else 'rogue'
         this_file_dir = os.path.dirname(os.path.realpath(__file__))
         rogue_path = os.path.join(this_file_dir, 'rogue', exe_name)
         return rogue_path
@@ -111,6 +126,14 @@ class RogueBox:
         :param RogueBoxOptions options:
              options object, see its documentation
         """
+        self.pty = None   # For Windows pywinpty
+        self.pipe = None  # For Linux pipe
+
+        self.terminal = Screen(80, 24)
+        self.stream = ByteStream()
+        self.stream.attach(self.terminal)
+        self.screen = self.get_empty_screen()
+
         if options.game_exe_path:
             self._default_exe = False
             self.rogue_path = options.game_exe_path
@@ -168,16 +191,7 @@ class RogueBox:
             self._start()
 
     def _start(self):
-        """Start the game.
-        If move_rogue was set to True in init, perform a legal move to see the tile below the player and the resulting
-        state will be returned.
-
-        :return:
-            if move_rogue was set to True in init:
-                (reward, state, won, lost)
-            else:
-                None
-        """
+        """Start the game."""
         # reset internal variables
         self.step_count = 0
         self.state = None
@@ -190,34 +204,30 @@ class RogueBox:
         self.reached_amulet_level = False
 
         # start game process
-        rogue_args = self.rogue_options.generate_args() if self._default_exe else []
-        self.terminal, self.pid, self.pipe = open_terminal(command=self.rogue_path, args=rogue_args)
+        rogue_args = self.rogue_options.generate_args()
+        command = self.rogue_path
 
-        if not self.is_running():
-            print("Could not find the executable in %s." % self.rogue_path)
-            exit()
+        if platform.system() == "Windows":
+            self.pty = pywinpty.PtyProcess.spawn([command] + rogue_args)
+            self.pid = self.pty.pid
+        else:
+            self.pipe = open_terminal(command=command, args=rogue_args)
+            self.pid = os.getpid() + 1 # A reasonable guess
 
-        # wait until the rogue spawns
         self.screen = self.get_empty_screen()
-        self._update_screen()
-        while not "Exp:" in self.screen[-1]:
-            # TODO: can rogue enter an endless loop here too?
-            time.sleep(self.busy_wait_seconds)
-            self._update_screen()
-
-        if not self.has_cmd_count:
-            # if self.has_cmd_count was True then we found the cmd count previously so it will be still there
-            # otherwise it may be the first time the game is started so we will check
-            self.has_cmd_count = "Cmd" in self.screen[-1]
-
         self.frame_history = [self.parser.parse_screen(self.screen)]
+        self._update_screen()
+
+        # check if rogue custom build has cmd count
+        try:
+            self.frame_history[-1].statusbar["command_count"]
+            self.has_cmd_count = True
+        except (KeyError, IndexError):
+            self.has_cmd_count = False
 
         if self.move_rogue:
-            # we move the rogue to be able to see the tile below it
-            action = self.get_legal_actions()[0]
-            return self.send_command(action)
-        else:
-            self.state = self.state_generator.compute_state(self.frame_history)
+            # move down to see what's below the player
+            return self.send_command('j')
 
     def reset(self):
         """Kill and restart the rogue process.
@@ -233,12 +243,12 @@ class RogueBox:
         return self._start()
 
     def stop(self):
-        """kill the rogue process"""
+        """stop the game"""
         if self.is_running():
-            self.pipe.close()
-            os.kill(self.pid, signal.SIGTERM)
-            # wait the process so it doesnt became a zombie
-            os.waitpid(self.pid, 0)
+            if platform.system() == "Windows":
+                self.pty.terminate()
+            else:
+                os.kill(self.pid, signal.SIGKILL)
 
     def get_current_state(self):
         """return the current state representation of the game.
@@ -247,11 +257,23 @@ class RogueBox:
         return self.state
 
     def _update_screen(self):
-        """update the virtual screen and the class variable"""
-        update = self.pipe.read(65536)
-        if update:
-            self.terminal.feed(update)
-            self.screen = self.terminal.read()
+        """update the screen buffer"""
+        read_bytes = b''
+        if platform.system() == "Windows":
+            if self.pty.is_alive():
+                try:
+                    read_bytes = self.pty.read(4096)
+                except EOFError:
+                    pass # Process has exited
+        else:
+            try:
+                read_bytes = os.read(self.pipe, 4096)
+            except OSError:
+                pass # Pipe is empty
+
+        if read_bytes:
+            self.stream.feed(read_bytes)
+            self.screen = self.terminal.display
 
     def get_empty_screen(self):
         screen = list()
@@ -272,12 +294,8 @@ class RogueBox:
         return self.screen
 
     def get_screen_string(self):
-        """return the screen as a single string with \n at EOL"""
-        out = ""
-        for line in self.screen:
-            out += line
-            out += '\n'
-        return out
+        """return the current screen as a string"""
+        return "\n".join(self.get_screen())
 
     @property
     def player_pos(self):
@@ -319,6 +337,9 @@ class RogueBox:
 
     def is_running(self):
         """check if the rogue process exited"""
+        if platform.system() == "Windows":
+            return self.pty and self.pty.is_alive()
+
         try:
             pid, status = os.waitpid(self.pid, os.WNOHANG)
         except (OSError, TypeError):
@@ -342,12 +363,11 @@ class RogueBox:
     def _dismiss_message(self):
         """dismiss a rogue status message (N.B. does not refresh the screen)"""
         messagebar = self.screen[0]
+        write_pipe = self.pty if platform.system() == "Windows" else self.pipe
         if "ore--" in messagebar:
-            # press space
-            self.pipe.write(' '.encode())
+            write_pipe.write(' '.encode())
         elif "all it" in messagebar:
-            # press esc
-            self.pipe.write('\e'.encode())
+            write_pipe.write('\x1b'.encode())
 
     def _need_to_dismiss(self):
         """check if there are status messages that need to be dismissed"""
@@ -380,9 +400,10 @@ class RogueBox:
 
     def quit_the_game(self):
         """Send the keystroke needed to quit the game."""
-        self.pipe.write('Q'.encode())
-        self.pipe.write('y'.encode())
-        self.pipe.write('\n'.encode())
+        write_pipe = self.pty if platform.system() == "Windows" else self.pipe
+        write_pipe.write('Q'.encode())
+        write_pipe.write('y'.encode())
+        write_pipe.write('\n'.encode())
 
     def get_last_frame(self):
         return self.frame_history[-1]
@@ -419,6 +440,10 @@ class RogueBox:
         """send a command to rogue and return (reward, state, won, lost).
         If passed generators are None, the ones supplied during init are used.
         """
+        command = command.strip() if command else ""
+        if not command:
+            return 0, self.state, False, False
+
         # if the caller passed a string longer than 1 character treat it as a sequence and
         # delegate to the helper that will stream the characters one by one.
         if isinstance(command, str) and len(command) > 1:
@@ -430,11 +455,21 @@ class RogueBox:
             if command == '>':
                 command = '<'
 
-        self.pipe.write(command.encode())
+        write_pipe = self.pty if platform.system() == "Windows" else self.pipe
+        
+        try:
+            if command: # pywinpty raises error on empty write
+                write_pipe.write(command.encode())
+        except OSError as e:
+            print(f"Warning: Could not write command '{command}'. Error: {e}")
+
         # rogue may not properly print all tiles after elaborating a command
         # so, based on the init options, we send a refresh command
         if self.refresh_after_commands:
-            self.pipe.write(self.refresh_command)
+            try:
+                write_pipe.write(self.refresh_command)
+            except OSError as e:
+                print(f"Warning: Could not write refresh command. Error: {e}")
 
         try:
             entered_loop = False

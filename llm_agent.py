@@ -2,6 +2,7 @@
 import os
 import random
 import re
+import xml.etree.ElementTree as ET
 from openai import OpenAI
 from dotenv import load_dotenv
 
@@ -21,7 +22,7 @@ class OpenRouterIntegration:
 
     def query(self, prompt):
         completion = self.client.chat.completions.create(
-            model="deepseek/deepseek-r1-0528:free",
+            model="deepseek/deepseek-chat-v3-0324:free",
             messages=[
                 {
                     "role": "user",
@@ -42,7 +43,7 @@ class LLMAgent(BaseAgent):
         self.llm_integration = llm_integration
         self.history = []
         
-        with open("rogue_guide.txt", "r") as f:
+        with open("rogue_guide.txt", "r", encoding="utf-8", errors="ignore") as f:
             self.rogue_guide = f.read()
 
     def act(self):
@@ -55,6 +56,9 @@ class LLMAgent(BaseAgent):
 
         chosen_action = self.get_llm_action(prompt)
         
+        if not chosen_action.strip():
+            return False         # do nothing this tick
+
         if isinstance(chosen_action, str) and len(chosen_action) > 1:
             reward, next_state, won, lost = self.rb.send_sequence(chosen_action)
         else:
@@ -72,7 +76,7 @@ class LLMAgent(BaseAgent):
         """
         Constructs the prompt to be sent to the LLM.
         """
-        history_str = "\n".join([f"Action: {a}\nNote: {n}" for a, n in history])
+        history_str = "\n".join([f"<move><action>{a}</action><note>{n}</note></move>" for a, n in history])
 
         prompt = f"""
         {self.rogue_guide}
@@ -85,37 +89,54 @@ class LLMAgent(BaseAgent):
         Here is the current screen:
         {screen}
 
-        What is your next move? Your answer must be in two lines.
-        The first line is the command to execute (e.g., 'h', 'qa', '10s').
-        The second line is a short sentence of your notes or explanation for the action.
+        What is your next move? Your response MUST be in a simple XML format.
+
         Example:
-        h
-        Moved left to explore the corridor.
+        <move>
+            <action>h</action>
+            <note>Exploring the corridor to the west.</note>
+        </move>
+
+        Do not add any other text, greetings, or markdown formatting outside of the main <move> tag.
         """
         return prompt
 
     def get_llm_action(self, prompt):
         """
-        Gets the action from the LLM, ensuring it's in the expected format.
+        Gets the action from the LLM by parsing its XML response.
         """
-        response = self.llm_integration.query(prompt)
+        response = self.llm_integration.query(prompt).strip()
+        print("LLM RAW-RESPONSE:\n", repr(response))
         
-        lines = response.strip().split('\n')
-        
-        if len(lines) >= 2:
-            action = lines[0].strip()
-            note = " ".join(lines[1:]).strip()
-            self.history.append((action, note))
-            if len(self.history) > 20: # Keep history to the last 20 turns
-                self.history.pop(0)
-            return action
-        else:
-            # Fallback for malformed response
-            action = lines[0].strip() if lines else random.choice(['h', 'j', 'k', 'l'])
-            self.history.append((action, "No explanation provided."))
-            if len(self.history) > 20:
-                self.history.pop(0)
-            return action
+        action = ''
+        note = "No explanation provided."
+
+        try:
+            root = ET.fromstring(response)
+            action_element = root.find('action')
+            note_element = root.find('note')
+
+            if action_element is not None and action_element.text:
+                action = action_element.text.strip()
+            
+            if note_element is not None and note_element.text:
+                note = note_element.text.strip()
+
+        except ET.ParseError:
+            note = "Fallback: LLM provided malformed XML."
+
+        # Safety check: if action is empty for any reason, fall back to a random move.
+        if not action:
+            action = random.choice(['h', 'j', 'k', 'l', '>'])
+            # If the note was also empty, update it.
+            if note == "No explanation provided.":
+                note = "Fallback: LLM provided an empty or invalid action."
+
+        self.history.append((action, note))
+        if len(self.history) > 20: # Keep history to the last 20 turns
+            self.history.pop(0)
+            
+        return action
 
 
 if __name__ == '__main__':
@@ -128,7 +149,7 @@ if __name__ == '__main__':
     agent = LLMAgent(
         AgentOptions(
             gui=True,
-            userinterface='curses',
+            userinterface='tk',
             gui_timer_ms=100,
             roguebox_options=RogueBoxOptions(
                 state_generator='Dummy_StateGenerator',

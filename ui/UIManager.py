@@ -15,9 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from .UI import UI
-from .UITk import UITk
-from .UICurse import UICurse
+from ui.UI import UI
 
 
 class UIManager:
@@ -28,6 +26,8 @@ class UIManager:
         :rtype: UI
         """
         if ui == "tk":
+            from ui.UITk import UITk
             return UITk(rogue_box)
         elif ui == "curses":
+            from ui.UICurse import UICurse
             return UICurse(rogue_box)

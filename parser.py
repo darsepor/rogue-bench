@@ -20,7 +20,7 @@ import numpy as np
 import itertools
 import copy
 
-from .frame_info import RogueFrameInfo
+from frame_info import RogueFrameInfo
 
 
 class RogueParser:

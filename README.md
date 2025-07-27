@@ -7,7 +7,7 @@
   providing several built-in state and reward generators and utilities for creating custom ones. 
 
 ## Build Notes:
-The original rogue submodule (rogueinabox/rogue) fails to compile with modern ncurses libraries on Cygwin/Windows, so we replace it with a more modern submodule in this repository."
+The original rogue submodule (rogueinabox/rogue) fails to compile with modern ncurses libraries on Cygwin/Windows, so we replace it with a more modern submodule in this repository.
 
 
 ## Cloning and building

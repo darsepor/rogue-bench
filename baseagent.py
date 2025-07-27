@@ -17,10 +17,10 @@
 
 import os
 
-from .ui.UIManager import UIManager, UI
-from .rogueinabox import RogueBox
-from .options import AgentOptions
-from .logger import Logger, Log
+from ui.UIManager import UIManager, UI
+from rogueinabox import RogueBox
+from options import AgentOptions
+from logger import Logger, Log
 from abc import ABC, abstractmethod
 
 
