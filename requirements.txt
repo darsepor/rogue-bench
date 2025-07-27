@@ -1,2 +1,4 @@
-numpy==1.14.5
-pyte==0.8.0
+numpy
+pyte==0.8.1
+openai
+python-dotenv

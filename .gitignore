@@ -7,6 +7,7 @@
 build/
 dist/
 .env/
+.env
 pyte.egg-info/
 pyte/
 rogue.scr

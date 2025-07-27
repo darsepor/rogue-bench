@@ -418,16 +418,12 @@ class RogueBox:
     def send_command(self, command, state_generator=None, reward_generator=None):
         """send a command to rogue and return (reward, state, won, lost).
         If passed generators are None, the ones supplied during init are used.
-
-        :param str command:
-            command to send, one in  .get_actions()
-        :param states.StateGenerator state_generator:
-            state builder, if None the one supplied during init will be used
-        :param rewards.RewardGenerator reward_generator:
-            reward generator, if None the one supplied during init will be used
-        :return:
-            (reward, state, won, lost)
         """
+        # if the caller passed a string longer than 1 character treat it as a sequence and
+        # delegate to the helper that will stream the characters one by one.
+        if isinstance(command, str) and len(command) > 1:
+            return self.send_sequence(command, state_generator=state_generator,
+                                       reward_generator=reward_generator)
 
         # turn descent command into ascent if this was requested in init
         if self.transform_descent_action and self.reached_amulet_level:
@@ -484,3 +480,20 @@ class RogueBox:
             self.evaluator.on_run_end(self.frame_history, won, is_rogue_dead)
 
         return self.reward, self.state, won, lost
+
+    def send_sequence(self, sequence, state_generator=None, reward_generator=None):
+        """Stream several keystrokes to Rogue as one logical action.
+
+        This is useful for commands that need an immediate follow-up key, e.g.
+        "qa" (quaff item a) or count prefixes like "10h".
+
+        The helper simply calls send_command for every byte in sequence so
+        that all the usual bookkeeping (screen refresh, busy-wait, reward
+        computation, logging, etc.) is reused.  The return value is the one
+        coming from the last character sent.
+        """
+        last_result = None
+        for ch in sequence:
+            last_result = self.send_command(ch, state_generator=state_generator,
+                                            reward_generator=reward_generator)
+        return last_result
