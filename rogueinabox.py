@@ -24,8 +24,10 @@ import subprocess
 import struct
 import signal
 
+# Platform-specific PTY support
 if platform.system() == "Windows":
-    import pywinpty
+    
+    import winpty as pywinpty
 else:
     import fcntl
     import tty
@@ -176,7 +178,9 @@ class RogueBox:
         self.reached_amulet_level = False
 
         self.refresh_after_commands = options.refresh_after_commands
-        self.refresh_command = '\x12'.encode()
+        # Refresh command (Ctrl+R).  For Unix pipes we send bytes, while
+        # the pywinpty ``write`` API expects *str* data.
+        self.refresh_command = '\x12' if platform.system() == "Windows" else '\x12'.encode()
 
         self.move_rogue = options.move_rogue
 
@@ -204,11 +208,19 @@ class RogueBox:
         self.reached_amulet_level = False
 
         # start game process
-        rogue_args = self.rogue_options.generate_args()
+        # Filter out empty strings to avoid passing blank arguments, which
+        # confuse the Win32 Rogue build and cause it to exit immediately.
+        rogue_args = [a for a in self.rogue_options.generate_args() if a]
         command = self.rogue_path
-
+        
         if platform.system() == "Windows":
-            self.pty = pywinpty.PtyProcess.spawn([command] + rogue_args)
+            rogue_dir = os.path.dirname(self.rogue_path)
+            # Many custom flags aren't supported by the shipped Win32 binary;
+            # launching with them causes Rogue to exit immediately.  So use
+            # an *empty* argument list on Windows.
+            self.pty = pywinpty.PtyProcess.spawn(
+                [command], cwd=rogue_dir
+            )
             self.pid = self.pty.pid
         else:
             self.pipe = open_terminal(command=command, args=rogue_args)
@@ -260,9 +272,16 @@ class RogueBox:
         """update the screen buffer"""
         read_bytes = b''
         if platform.system() == "Windows":
-            if self.pty.is_alive():
+            is_alive = getattr(self.pty, "is_alive", None)
+            if is_alive is None:
+                is_alive = getattr(self.pty, "isalive", lambda: True)
+
+            if is_alive():
                 try:
                     read_bytes = self.pty.read(4096)
+                    if isinstance(read_bytes, str):
+                        # winpty returns text, but pyte expects raw bytes.
+                        read_bytes = read_bytes.encode("utf-8", errors="ignore")
                 except EOFError:
                     pass # Process has exited
         else:
@@ -338,7 +357,12 @@ class RogueBox:
     def is_running(self):
         """check if the rogue process exited"""
         if platform.system() == "Windows":
-            return self.pty and self.pty.is_alive()
+            if not self.pty:
+                return False
+            is_alive = getattr(self.pty, "is_alive", None)
+            if is_alive is None:
+                is_alive = getattr(self.pty, "isalive", lambda: True)
+            return is_alive()
 
         try:
             pid, status = os.waitpid(self.pid, os.WNOHANG)
@@ -365,9 +389,15 @@ class RogueBox:
         messagebar = self.screen[0]
         write_pipe = self.pty if platform.system() == "Windows" else self.pipe
         if "ore--" in messagebar:
-            write_pipe.write(' '.encode())
+            cmd = ' '
+            if platform.system() != "Windows":
+                cmd = cmd.encode()
+            write_pipe.write(cmd)
         elif "all it" in messagebar:
-            write_pipe.write('\x1b'.encode())
+            cmd = '\x1b'
+            if platform.system() != "Windows":
+                cmd = cmd.encode()
+            write_pipe.write(cmd)
 
     def _need_to_dismiss(self):
         """check if there are status messages that need to be dismissed"""
@@ -387,15 +417,22 @@ class RogueBox:
         :raises: RogueLoopError
             in case more than self.max_busy_wait_seconds are waited for
         """
+        # This function is now disabled to allow the LLM to see messages.
+        # The logic to handle '--More--' prompts has been moved to the LLM's prompt.
+        # return 0
+        
         t0 = time.perf_counter()
         n_cmds = 0
+        # We still need to loop to update the screen, but we will no longer send dismissal commands.
         while self._need_to_dismiss():
-            self._dismiss_message()
+            # self._dismiss_message() # Disabled
             time.sleep(self.busy_wait_seconds)
             self._update_screen()
-            n_cmds += 1
+            # n_cmds += 1 # We are not sending commands anymore
             if (time.perf_counter() - t0) > self.max_busy_wait_seconds:
-                raise RogueLoopError
+                # We break instead of raising an error to let the LLM handle it.
+                warnings.warn("Rogue appears to be stuck on a message prompt.", RogueLoopWarning)
+                break
         return n_cmds
 
     def quit_the_game(self):
@@ -456,10 +493,13 @@ class RogueBox:
                 command = '<'
 
         write_pipe = self.pty if platform.system() == "Windows" else self.pipe
-        
+
         try:
-            if command: # pywinpty raises error on empty write
-                write_pipe.write(command.encode())
+            if command:  # pywinpty raises error on empty write
+                if platform.system() == "Windows":
+                    write_pipe.write(command)  # expects str
+                else:
+                    write_pipe.write(command.encode())
         except OSError as e:
             print(f"Warning: Could not write command '{command}'. Error: {e}")
 
@@ -467,7 +507,10 @@ class RogueBox:
         # so, based on the init options, we send a refresh command
         if self.refresh_after_commands:
             try:
-                write_pipe.write(self.refresh_command)
+                if platform.system() == "Windows":
+                    write_pipe.write(self.refresh_command)
+                else:
+                    write_pipe.write(self.refresh_command)
             except OSError as e:
                 print(f"Warning: Could not write refresh command. Error: {e}")
 

@@ -28,3 +28,287 @@
 [ Started session at 2025-07-28T00:40:58.563342 ]
 
  
+[2025-07-28T20:10:17.988739] 
+
+[ Started session at 2025-07-28T20:10:17.988739 ]
+
+ 
+[2025-07-28T20:15:21.751724] 
+
+[ Started session at 2025-07-28T20:15:21.751724 ]
+
+ 
+[2025-07-28T20:19:25.819642] 
+
+[ Started session at 2025-07-28T20:19:25.819642 ]
+
+ 
+[2025-07-28T20:22:22.583243] 
+
+[ Started session at 2025-07-28T20:22:22.583243 ]
+
+ 
+[2025-07-28T20:25:02.259684] 
+
+[ Started session at 2025-07-28T20:25:02.259684 ]
+
+ 
+[2025-07-28T20:27:29.721130] 
+
+[ Started session at 2025-07-28T20:27:29.721130 ]
+
+ 
+[2025-07-28T20:29:08.814481] 
+
+[ Started session at 2025-07-28T20:29:08.814481 ]
+
+ 
+[2025-07-28T20:30:32.584599] 
+
+[ Started session at 2025-07-28T20:30:32.584599 ]
+
+ 
+[2025-07-28T20:30:37.072614] Chosen action: h
+[2025-07-28T20:30:37.072614] Note: Starting exploration by moving west.
+[2025-07-28T20:30:37.072614] Reward: 0, Won: False, Lost: False
+[2025-07-28T20:30:42.546725] Chosen action: l
+[2025-07-28T20:30:42.546725] Note: Moving east toward the mysterious question mark object near the corridor.
+[2025-07-28T20:30:42.546725] Reward: 0, Won: False, Lost: False
+[2025-07-28T20:30:44.841468] Chosen action: l
+[2025-07-28T20:30:44.841468] Note: Moving east toward the question mark object to examine it.
+[2025-07-28T20:30:44.841468] Reward: 0, Won: False, Lost: False
+[2025-07-28T20:30:48.500798] Chosen action: ?
+[2025-07-28T20:30:48.500798] Note: Examining the question mark object to identify what it is.
+[2025-07-28T20:30:48.500798] Reward: 0, Won: False, Lost: False
+[2025-07-28T20:30:52.563347] Chosen action: l
+[2025-07-28T20:30:52.563347] Note: Moving east toward the question mark object to pick it up.
+[2025-07-28T20:30:52.563347] Reward: 0, Won: False, Lost: True
+[2025-07-28T20:30:54.844439] Chosen action: h
+[2025-07-28T20:30:54.844439] Note: Continuing exploration of the western corridor since dungeon layout is not yet visible.
+[2025-07-28T20:30:54.844439] Reward: 0, Won: False, Lost: False
+[2025-07-28T20:31:00.819600] Chosen action: h
+[2025-07-28T20:31:00.819600] Note: Exploring west corridor to reveal more of the dungeon layout.
+[2025-07-28T20:31:00.819600] Reward: 0, Won: False, Lost: False
+[2025-07-28T20:31:11.625141] Chosen action: m
+[2025-07-28T20:31:11.625141] Note: Moving onto the question mark object without picking it up to first examine the surrounding area.
+[2025-07-28T20:31:11.625141] Reward: 0, Won: False, Lost: False
+[2025-07-28T20:34:50.963147] 
+
+[ Started session at 2025-07-28T20:34:50.963147 ]
+
+ 
+[2025-07-28T20:34:55.995421] Chosen action: .
+[2025-07-28T20:34:55.995421] Note: Waiting for the dungeon to load.
+[2025-07-28T20:34:55.995421] Reward: 0, Won: False, Lost: False
+[2025-07-28T20:35:01.213759] Chosen action: l
+[2025-07-28T20:35:01.213759] Note: Moving right to explore the corridor.
+[2025-07-28T20:35:01.213759] Reward: 0, Won: False, Lost: False
+[2025-07-28T20:35:03.287509] Chosen action: l
+[2025-07-28T20:35:03.287509] Note: Continuing to explore the corridor to the right.
+[2025-07-28T20:35:03.287509] Reward: 0, Won: False, Lost: False
+[2025-07-28T20:35:06.222776] Chosen action: l
+[2025-07-28T20:35:06.222776] Note: Moving right toward the door to explore further.
+[2025-07-28T20:35:06.222776] Reward: 0, Won: False, Lost: False
+[2025-07-28T20:35:13.063882] Chosen action: l
+[2025-07-28T20:35:13.063882] Note: Moving through the door to explore the next room.
+[2025-07-28T20:35:13.063882] Reward: 0, Won: False, Lost: False
+[2025-07-28T20:35:13.983794] Chosen action: l
+[2025-07-28T20:35:13.983794] Note: Moving further into the room to explore for items or monsters.
+[2025-07-28T20:35:13.983794] Reward: 0, Won: False, Lost: False
+[2025-07-28T20:35:17.928834] Chosen action: l
+[2025-07-28T20:35:17.928834] Note: Exploring further to the right side of the current room.
+[2025-07-28T20:35:17.928834] Reward: 0, Won: False, Lost: False
+[2025-07-28T20:35:20.861053] Chosen action: l
+[2025-07-28T20:35:20.861053] Note: Moving further right to explore the remaining area of the room.
+[2025-07-28T20:35:20.861053] Reward: 0, Won: False, Lost: False
+[2025-07-28T20:35:24.632951] Chosen action: .
+[2025-07-28T20:35:24.632951] Note: Resting to regain health before continuing my exploration.
+[2025-07-28T20:35:24.632951] Reward: 0, Won: False, Lost: False
+[2025-07-28T20:35:34.300565] Chosen action: s
+[2025-07-28T20:35:34.300565] Note: Searching for traps or secret doors near my current position.
+[2025-07-28T20:35:34.300565] Reward: 0, Won: False, Lost: False
+[2025-07-28T20:35:38.571677] Chosen action: l
+[2025-07-28T20:35:38.571677] Note: Moving right to explore the corridor extending from the room.
+[2025-07-28T20:35:38.571677] Reward: 0, Won: False, Lost: False
+[2025-07-28T20:35:45.688156] Chosen action: l
+[2025-07-28T20:35:45.688156] Note: Examining the right corridor for potential loot or enemies.
+[2025-07-28T20:35:45.688156] Reward: 0, Won: False, Lost: False
+[2025-07-28T20:35:48.184210] Chosen action: l
+[2025-07-28T20:35:48.184210] Note: Moving further down the corridor to explore the next area.
+[2025-07-28T20:35:48.184210] Reward: 0, Won: False, Lost: False
+[2025-07-28T20:35:58.648353] Chosen action: k
+[2025-07-28T20:35:58.648353] Note: Moving up to examine the wall and look for hidden passages.
+[2025-07-28T20:35:58.648353] Reward: 0, Won: False, Lost: False
+[2025-07-28T20:35:59.684280] Chosen action: l
+[2025-07-28T20:35:59.684280] Note: Moving right to explore the corridor extending east from the current room.
+[2025-07-28T20:35:59.684280] Reward: 0, Won: False, Lost: False
+[2025-07-28T20:36:03.731197] Chosen action: k
+[2025-07-28T20:36:03.731197] Note: Moving up to investigate the northern wall for potential secrets.
+[2025-07-28T20:36:03.731197] Reward: 0, Won: False, Lost: False
+[2025-07-28T20:36:06.912161] Chosen action: l
+[2025-07-28T20:36:06.912161] Note: Moving further down the corridor to explore what lies beyond.
+[2025-07-28T20:36:06.912161] Reward: 0, Won: False, Lost: False
+[2025-07-28T20:36:10.537793] Chosen action: s
+[2025-07-28T20:36:10.537793] Note: Searching for traps or hidden doors near my current position before proceeding further.
+[2025-07-28T20:36:10.538794] Reward: 0, Won: False, Lost: False
+[2025-07-28T20:36:17.488595] Chosen action: s
+[2025-07-28T20:36:17.488595] Note: Searching for traps or hidden passages near my current position before proceeding further.
+[2025-07-28T20:36:17.488595] Reward: 0, Won: False, Lost: False
+[2025-07-28T20:36:21.016451] Chosen action: l
+[2025-07-28T20:36:21.016451] Note: Moving right to explore beyond the door at the corridor's end.
+[2025-07-28T20:36:21.016451] Reward: 0, Won: False, Lost: False
+[2025-07-28T20:36:53.566801] 
+
+[ Started session at 2025-07-28T20:36:53.566801 ]
+
+ 
+[2025-07-28T20:36:58.392986] Chosen action: h
+[2025-07-28T20:36:58.392986] Note: Begin exploring leftward from the entrance.
+[2025-07-28T20:36:58.392986] Reward: 0, Won: False, Lost: False
+[2025-07-28T20:37:01.786583] Chosen action: h
+[2025-07-28T20:37:01.786583] Note: Continue exploring west corridor.
+[2025-07-28T20:37:01.786583] Reward: 0, Won: False, Lost: False
+[2025-07-28T20:37:04.021251] Chosen action: h
+[2025-07-28T20:37:04.021251] Note: Move west to investigate the corridor.
+[2025-07-28T20:37:04.021251] Reward: 0, Won: False, Lost: False
+[2025-07-28T20:37:08.318264] Chosen action: f
+[2025-07-28T20:37:08.318264] Note: Attack the snake (S) to the south.
+[2025-07-28T20:37:08.318264] Reward: 0, Won: False, Lost: False
+[2025-07-28T20:37:12.446005] Chosen action: f
+[2025-07-28T20:37:12.446005] Note: Continue attacking the snake (S) to the south to eliminate the threat.
+[2025-07-28T20:37:12.446005] Reward: 0, Won: False, Lost: False
+[2025-07-28T20:37:20.550256] Chosen action: f
+[2025-07-28T20:37:20.550256] Note: Attack the snake (S) again since it may still pose a threat.
+[2025-07-28T20:37:20.550256] Reward: 0, Won: False, Lost: False
+[2025-07-28T20:37:25.548235] Chosen action: f
+[2025-07-28T20:37:25.548235] Note: Engage the snake (S) to the south in combat until it is defeated.
+[2025-07-28T20:37:25.548235] Reward: 0, Won: False, Lost: False
+[2025-07-28T20:37:27.971837] Chosen action: s
+[2025-07-28T20:37:27.971837] Note: Search for traps or hidden doors near current position before proceeding.
+[2025-07-28T20:37:27.971837] Reward: 0, Won: False, Lost: False
+[2025-07-28T20:37:31.833348] Chosen action: s
+[2025-07-28T20:37:31.833348] Note: Search again thoroughly near staircase before descending.
+[2025-07-28T20:37:31.833348] Reward: 0, Won: False, Lost: False
+[2025-07-28T20:37:32.921604] Chosen action: >
+[2025-07-28T20:37:32.921604] Note: Descend the staircase (%) to explore the next level of the dungeon.
+[2025-07-28T20:37:32.921604] Reward: 0, Won: False, Lost: False
+[2025-07-28T21:33:32.027397] 
+
+[ Started session at 2025-07-28T21:33:32.027397 ]
+
+ 
+[2025-07-28T21:33:35.381397] Chosen action: s
+[2025-07-28T21:33:35.381397] Note: Searching for any hidden doors or traps nearby.
+[2025-07-28T21:33:35.381397] Reward: 0, Won: False, Lost: False
+[2025-07-28T21:33:36.628394] Chosen action: s
+[2025-07-28T21:33:36.628394] Note: Searching for anything interactable.
+[2025-07-28T21:33:36.628394] Reward: 0, Won: False, Lost: False
+[2025-07-28T21:33:37.182910] Chosen action: s
+[2025-07-28T21:33:37.182910] Note: Searching again since the area appears unexplored.
+[2025-07-28T21:33:37.182910] Reward: 0, Won: False, Lost: False
+[2025-07-28T21:33:39.933851] Chosen action: fh
+[2025-07-28T21:33:39.933851] Note: Fighting the H monster to the left.
+[2025-07-28T21:33:39.933851] Reward: 0, Won: False, Lost: False
+[2025-07-28T21:33:41.585209] Chosen action: fh
+[2025-07-28T21:33:41.585209] Note: Fighting the H monster to ensure safe passage.
+[2025-07-28T21:33:41.585209] Reward: 0, Won: False, Lost: False
+[2025-07-28T21:33:48.081560] Chosen action: Fh
+[2025-07-28T21:33:48.081560] Note: Fighting the H monster to the left until it's defeated.
+[2025-07-28T21:33:48.081560] Reward: 0, Won: False, Lost: False
+[2025-07-28T21:33:54.853251] Chosen action: fh
+[2025-07-28T21:33:54.853251] Note: Fighting the H monster to the east to clear the path.
+[2025-07-28T21:33:54.853251] Reward: 0, Won: False, Lost: False
+[2025-07-28T21:34:02.015313] Chosen action: fh
+[2025-07-28T21:34:02.015313] Note: Fighting the H monster to the east to clear the path.
+[2025-07-28T21:34:02.015313] Reward: 0, Won: False, Lost: False
+[2025-07-28T21:34:03.776210] Chosen action: l
+[2025-07-28T21:34:03.776210] Note: Moving right to approach the E monster and explore the area.
+[2025-07-28T21:34:03.776210] Reward: 0, Won: False, Lost: False
+[2025-07-28T21:34:05.859492] Chosen action: fh
+[2025-07-28T21:34:05.859492] Note: Fighting the H monster to the right to clear the path for exploration.
+[2025-07-28T21:34:05.859492] Reward: 0, Won: False, Lost: False
+[2025-07-28T21:34:07.712381] Chosen action: fh
+[2025-07-28T21:34:07.712381] Note: Fighting the H monster to clear the path for further exploration.
+[2025-07-28T21:34:07.712381] Reward: 0, Won: False, Lost: False
+[2025-07-28T21:34:10.353462] Chosen action: l
+[2025-07-28T21:34:10.353462] Note: Moving right to engage the H monster and explore the eastern area.
+[2025-07-28T21:34:10.353462] Reward: 0, Won: False, Lost: False
+[2025-07-28T21:34:12.127594] Chosen action: l
+[2025-07-28T21:34:12.127594] Note: Moving right to explore the corridor and prepare for combat with the H monster.
+[2025-07-28T21:34:12.127594] Reward: 0, Won: False, Lost: False
+[2025-07-28T21:34:14.212772] Chosen action: fh
+[2025-07-28T21:34:14.212772] Note: Fighting the H monster to the east to clear the path.
+[2025-07-28T21:34:14.212772] Reward: 0, Won: False, Lost: False
+[2025-07-28T21:34:18.807911] Chosen action: Fh
+[2025-07-28T21:34:18.807911] Note: Fighting the H monster to the left until it's defeated before proceeding further.
+[2025-07-28T21:34:18.807911] Reward: 0, Won: False, Lost: False
+[2025-07-28T21:34:20.663059] Chosen action: fh
+[2025-07-28T21:34:20.663059] Note: Fighting the H monster to the east to clear the path.
+[2025-07-28T21:34:20.663059] Reward: 0, Won: False, Lost: False
+[2025-07-28T21:34:23.412015] Chosen action: h
+[2025-07-28T21:34:23.412015] Note: Moving left to engage the H monster.
+[2025-07-28T21:34:23.412015] Reward: 0, Won: False, Lost: False
+[2025-07-28T21:34:27.671509] Chosen action: Fh
+[2025-07-28T21:34:27.671509] Note: Fighting the H monster to the left until defeated to ensure safe passage.
+[2025-07-28T21:34:27.671509] Reward: 0, Won: False, Lost: False
+[2025-07-28T21:34:30.086382] Chosen action: k
+[2025-07-28T21:34:30.086382] Note: Moving up to explore the corridor and approach the staircase (%) for potential descent to next level.
+[2025-07-28T21:34:30.086382] Reward: 0, Won: False, Lost: False
+[2025-07-28T21:34:32.162717] Chosen action: Fh
+[2025-07-28T21:34:32.162717] Note: Fighting the H monster to the east to clear the path before exploring further.
+[2025-07-28T21:34:32.162717] Reward: 0, Won: False, Lost: False
+[2025-07-28T21:34:34.908643] Chosen action: s
+[2025-07-28T21:34:34.908643] Note: Searching for any hidden dangers or items near my current position.
+[2025-07-28T21:34:34.908643] Reward: 0, Won: False, Lost: False
+[2025-07-28T21:34:39.731220] Chosen action: k
+[2025-07-28T21:34:39.731220] Note: Moving up towards the staircase (%) to descend to the next level.
+[2025-07-28T21:34:39.731220] Reward: 0, Won: False, Lost: False
+[2025-07-28T21:34:42.154563] Chosen action: k
+[2025-07-28T21:34:42.154563] Note: Continuing upward toward the staircase (%) to descend to the next level.
+[2025-07-28T21:34:42.154563] Reward: 0, Won: False, Lost: False
+[2025-07-28T21:34:46.436271] Chosen action: k
+[2025-07-28T21:34:46.436271] Note: Moving up to explore the corridor and approach the staircase (%) for descent to the next level.
+[2025-07-28T21:34:46.436271] Reward: 0, Won: False, Lost: False
+[2025-07-28T21:34:50.067319] Chosen action: >
+[2025-07-28T21:34:50.067319] Note: Descending the staircase to the next level to progress toward the Amulet of Yendor.
+[2025-07-28T21:34:50.067319] Reward: 0, Won: False, Lost: False
+[2025-07-28T21:34:53.353670] Chosen action: fh
+[2025-07-28T21:34:53.353670] Note: Fighting the H monster to the left to clear the path.
+[2025-07-28T21:34:53.353670] Reward: 0, Won: False, Lost: False
+[2025-07-28T21:34:55.974049] Chosen action: fh
+[2025-07-28T21:34:55.974049] Note: Fighting the H monster to the left to clear the path.
+[2025-07-28T21:34:55.974049] Reward: 0, Won: False, Lost: False
+[2025-07-28T21:34:57.387648] Chosen action: s
+[2025-07-28T21:34:57.387648] Note: Searching for secret doors or traps before proceeding further.
+[2025-07-28T21:34:57.387648] Reward: 0, Won: False, Lost: False
+[2025-07-28T21:34:58.263910] Chosen action: fh
+[2025-07-28T21:34:58.263910] Note: Fighting the H monster to the right to clear the path for exploration.
+[2025-07-28T21:34:58.263910] Reward: 0, Won: False, Lost: False
+[2025-07-28T21:34:59.696116] Chosen action: s
+[2025-07-28T21:34:59.696116] Note: Searching for hidden dangers or items before proceeding.
+[2025-07-28T21:34:59.696116] Reward: 0, Won: False, Lost: False
+[2025-07-28T21:35:01.262246] Chosen action: l
+[2025-07-28T21:35:01.262246] Note: Moving right toward the H monster to engage in combat.
+[2025-07-28T21:35:01.262246] Reward: 0, Won: False, Lost: False
+[2025-07-28T21:35:03.505222] Chosen action: h
+[2025-07-28T21:35:03.505222] Note: Moving left to explore the corridor and approach the E monster.
+[2025-07-28T21:35:03.505222] Reward: 0, Won: False, Lost: False
+[2025-07-28T21:35:07.913107] Chosen action: fh
+[2025-07-28T21:35:07.913107] Note: Fighting the E monster to the east to clear the path.
+[2025-07-28T21:35:07.913107] Reward: 0, Won: False, Lost: False
+[2025-07-28T21:35:10.316297] Chosen action: fh
+[2025-07-28T21:35:10.316297] Note: Fighting the E monster to the east to clear the path.
+[2025-07-28T21:35:10.316297] Reward: 0, Won: False, Lost: False
+[2025-07-28T21:35:11.982120] Chosen action: s
+[2025-07-28T21:35:11.982120] Note: Searching for hidden dangers or items before proceeding.
+[2025-07-28T21:35:11.982120] Reward: 0, Won: False, Lost: False
+[2025-07-28T21:35:12.868859] Chosen action: fh
+[2025-07-28T21:35:12.868859] Note: Fighting the E monster to the east to clear the path.
+[2025-07-28T21:35:12.868859] Reward: 0, Won: False, Lost: False
+[2025-07-28T21:35:14.195000] Chosen action: l
+[2025-07-28T21:35:14.195000] Note: Moving right to engage the H monster and explore further.
+[2025-07-28T21:35:14.195000] Reward: 0, Won: False, Lost: False
+[2025-07-28T21:35:22.196605] Chosen action: Fh
+[2025-07-28T21:35:22.196605] Note: Fighting the H monster to clear the path before exploring further.
+[2025-07-28T21:35:22.196605] Reward: 0, Won: False, Lost: False
+[2025-07-28T21:35:27.554274] Chosen action: l

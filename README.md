@@ -1,3 +1,7 @@
+# Initial Results 2025/07/28:
+
+The LLMs fail miserably, they understand what is going on but navigating tiles seems to be an issue. It is lucky if the agent leaves the initial room or goes through a corridors. It is most likely a tokenization rather than performance issue, as tokens most certainly do not correspond to, say, game tiles marked by '.', etc. The next step is to encode Rogue's ASCII GUI in a tokenizer-friendly way and/or use a parser already present in this environment.
+
 # Rogueinabox: a Rogue environment for AI learning
 
   Rogueinabox is a higly modular and configurable learning environment built around the videogame Rogue,
@@ -6,7 +10,7 @@
   It offers easy ways to interact with the game, especially for the reinforcement learning setting,
   providing several built-in state and reward generators and utilities for creating custom ones. 
 
-## Build Notes:
+## Build Notes for this repository:
 The original rogue submodule (rogueinabox/rogue) fails to compile with modern ncurses libraries on Cygwin/Windows, so we replace it with a more modern submodule in this repository.
 
 
